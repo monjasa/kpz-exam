@@ -19,7 +19,9 @@ namespace WebApplication.DataAccess.Repositories
 
         public async Task<IEnumerable<Track>> ListAsync()
         {
-            return await _context.Tracks.ToListAsync();
+            return await _context.Tracks
+                .Include(track => track.Playlist)
+                .ToListAsync();
         }
 
         public async Task<EntityEntry<Track>> SaveAsync(Track track)

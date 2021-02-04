@@ -9,6 +9,7 @@ namespace WebApplication.Services
     public class TrackService : ITrackService
     {
         private readonly ITrackRepository _trackRepository;
+        private readonly IPlaylistRepository _playlistRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public TrackService(ITrackRepository trackRepository, IUnitOfWork unitOfWork)
@@ -37,8 +38,12 @@ namespace WebApplication.Services
 
         public async Task<Track> UpdateTrackAsync(Track trackToUpdate, Track track)
         {
+            var playlist = await _playlistRepository.FindAsync(track.PlaylistId);
+            
             trackToUpdate.Title = track.Title;
             trackToUpdate.FilePath = track.FilePath;
+            trackToUpdate.Playlist = playlist;
+            trackToUpdate.PlaylistId = track.PlaylistId;
 
             var updatedTrack = _trackRepository.Update(trackToUpdate);
             await _unitOfWork.ApplyChangesAsync();
