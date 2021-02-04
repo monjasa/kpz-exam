@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using ApplicationModel.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ApplicationModel.Models;
-using WebApplication.DataAccess;
+using WebApplication.Services;
 
 namespace WebApplication.Controllers
 {
@@ -14,26 +12,25 @@ namespace WebApplication.Controllers
     [ApiController]
     public class TracksController : ControllerBase
     {
-        private readonly MusicContext _context;
+        private readonly ITrackService _trackService;
 
-        public TracksController(MusicContext context)
+        public TracksController(ITrackService trackService)
         {
-            _context = context;
+            _trackService = trackService;
         }
 
         // GET: api/Tracks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Track>>> GetTracks()
+        public async Task<IEnumerable<Track>> GetTracks()
         {
-            return await _context.Tracks.ToListAsync();
+            return await _trackService.GetAllTracksAsync();
         }
 
         // GET: api/Tracks/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Track>> GetTrack(int id)
         {
-            var track = await _context.Tracks.FindAsync(id);
-
+            var track = await _trackService.GetTrackByIdAsync(id);
             if (track == null)
             {
                 return NotFound();
@@ -43,68 +40,60 @@ namespace WebApplication.Controllers
         }
 
         // PUT: api/Tracks/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTrack(int id, Track track)
         {
-            if (id != track.Id)
+            var trackToUpdate = await _trackService.GetTrackByIdAsync(id);
+            if (trackToUpdate == null)
             {
-                return BadRequest();
+                return NotFound();
             }
-
-            _context.Entry(track).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _trackService.UpdateTrackAsync(trackToUpdate, track);
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception exception)
             {
-                if (!TrackExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            return NoContent();
         }
 
         // POST: api/Tracks
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Track>> PostTrack(Track track)
+        public async Task<ActionResult<Track>> PostTrack([FromBody] Track track)
         {
-            _context.Tracks.Add(track);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTrack", new { id = track.Id }, track);
+            try
+            {
+                var createdTrack = await _trackService.CreateTrackAsync(track);
+                return CreatedAtAction(nameof(GetTrack), new { id = createdTrack.Id }, createdTrack);
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         // DELETE: api/Tracks/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Track>> DeleteTrack(int id)
         {
-            var track = await _context.Tracks.FindAsync(id);
+            var track = await _trackService.GetTrackByIdAsync(id);
             if (track == null)
             {
                 return NotFound();
             }
 
-            _context.Tracks.Remove(track);
-            await _context.SaveChangesAsync();
-
-            return track;
-        }
-
-        private bool TrackExists(int id)
-        {
-            return _context.Tracks.Any(e => e.Id == id);
+            try
+            {
+                await _trackService.DeleteTrackAsync(track);
+                return NoContent();
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

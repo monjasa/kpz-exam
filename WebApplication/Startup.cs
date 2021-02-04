@@ -5,6 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApplication.DataAccess;
+using WebApplication.DataAccess.Repositories;
+using WebApplication.DataAccess.UnitOfWork;
+using WebApplication.Services;
 
 namespace WebApplication
 {
@@ -20,6 +23,11 @@ namespace WebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MusicContext>(builder => builder.UseInMemoryDatabase("Music"));
+            
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ITrackRepository, TrackRepository>();
+            services.AddScoped<ITrackService, TrackService>();
+            
             services.AddControllers();
         }
 
@@ -31,7 +39,6 @@ namespace WebApplication
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseAuthorization();
