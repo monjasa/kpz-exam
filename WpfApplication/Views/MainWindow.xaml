@@ -1,0 +1,45 @@
+﻿<Window x:Class="WpfApplication.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Title="Music Application" Height="450" Width="800">
+    <DockPanel LastChildFill="True" Margin="5">
+        <Label DockPanel.Dock="Top" Content="Music Application | Tracks" />
+        <Button DockPanel.Dock="Top" Command="{Binding ReadTracksCommand}" Content="Read tracks" />
+        
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Title" />
+            <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding TrackTitle, Mode=TwoWay}" />
+            <Label Grid.Row="0" Grid.Column="1" Content="File Path" />
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TrackFilePath, Mode=TwoWay}" />
+            <Label Grid.Row="0" Grid.Column="2" Content="Playlist ID" />
+            <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding TrackPlaylistId, Mode=TwoWay}" />
+
+            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Command="{Binding CreateTrackCommand}"
+                    Content="Create track" />
+        </Grid>
+        <Button DockPanel.Dock="Bottom" Command="{Binding DeleteTrackCommand}" Content="Delete selected track" />
+        
+        <DataGrid DockPanel.Dock="Left" AutoGenerateColumns="False" ItemsSource="{Binding Tracks}"
+                  SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Title" Width="*" Binding="{Binding Title, Mode=TwoWay}" />
+                <DataGridTextColumn Header="File Path" Width="*" Binding="{Binding FilePath, Mode=TwoWay}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

@@ -27,7 +27,8 @@ namespace WebApplication
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<MusicContext>(builder => builder.UseInMemoryDatabase("Music"));
+            services.AddDbContext<MusicContext>(builder => 
+                builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITrackRepository, TrackRepository>();
@@ -39,10 +40,6 @@ namespace WebApplication
             services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
-            
-            // services.AddControllers().AddNewtonsoftJson(options =>
-            //     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            // );
             
             services.AddSwaggerGen(options =>
             {

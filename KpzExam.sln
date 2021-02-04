@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication", "WebApplic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationModel", "ApplicationModel\ApplicationModel.csproj", "{491A60AD-6BA6-437D-A78D-9ABF1A239B9A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApplication", "WpfApplication\WpfApplication.csproj", "{066B353B-0A5B-4B25-ABC4-A1C4CDF7E147}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{491A60AD-6BA6-437D-A78D-9ABF1A239B9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{491A60AD-6BA6-437D-A78D-9ABF1A239B9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{491A60AD-6BA6-437D-A78D-9ABF1A239B9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{066B353B-0A5B-4B25-ABC4-A1C4CDF7E147}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{066B353B-0A5B-4B25-ABC4-A1C4CDF7E147}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{066B353B-0A5B-4B25-ABC4-A1C4CDF7E147}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{066B353B-0A5B-4B25-ABC4-A1C4CDF7E147}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
