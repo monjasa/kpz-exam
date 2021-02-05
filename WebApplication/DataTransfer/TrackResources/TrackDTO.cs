@@ -1,6 +1,6 @@
-﻿using ApplicationModel.Models;
+﻿using WebApplication.DataTransfer.PlaylistResources;
 
-namespace WebApplication.DataTransfer
+namespace WebApplication.DataTransfer.TrackResources
 {
     public class TrackDTO
     {

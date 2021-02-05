@@ -1,5 +1,7 @@
 ﻿using ApplicationModel.Models;
 using AutoMapper;
+using WebApplication.DataTransfer.PlaylistResources;
+using WebApplication.DataTransfer.TrackResources;
 
 namespace WebApplication.DataTransfer
 {

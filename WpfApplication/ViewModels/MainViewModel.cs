@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using ApplicationModel.Models;
@@ -9,7 +10,8 @@ namespace WpfApplication.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private ITrackService _trackService;
+        private readonly IPlaylistService _playlistService;
+        private readonly ITrackService _trackService;
         
         private TrackViewModel _selectedTrack;
         
@@ -21,13 +23,16 @@ namespace WpfApplication.ViewModels
         private ICommand _readTracksCommand;
         private ICommand _deleteTrackCommand;
 
-        public MainViewModel(ITrackService trackService)
+        public MainViewModel(IPlaylistService playlistService, ITrackService trackService)
         {
+            _playlistService = playlistService;
             _trackService = trackService;
             
+            Playlists = new ObservableCollection<PlaylistViewModel>();
             Tracks = new ObservableCollection<TrackViewModel>();
         }
 
+        public ObservableCollection<PlaylistViewModel> Playlists { get; set; }
         public ObservableCollection<TrackViewModel> Tracks { get; set; }
         
         public TrackViewModel SelectedTrack
@@ -93,8 +98,10 @@ namespace WpfApplication.ViewModels
                 FilePath = TrackFilePath,
                 PlaylistId = TrackPlaylistId
             });
-            
-            var trackViewModel = new TrackViewModel(track);
+
+            track = await _trackService.GetTrackByIdAsync(track.Id);
+
+            var trackViewModel = new TrackViewModel(this, track);
             
             Tracks.Add(trackViewModel);
             SelectedTrack = trackViewModel;
@@ -102,10 +109,16 @@ namespace WpfApplication.ViewModels
 
         private async void ReadTracks(object args)
         {
-            var tracks = await _trackService.GetTracksAsync();
-
+            Playlists.Clear();
             Tracks.Clear();
-            tracks.Select(track => new TrackViewModel(track))
+            
+            var playlists = await _playlistService.GetPlaylistsAsync();
+            playlists.Select(playlist => new PlaylistViewModel(playlist))
+                .ToList()
+                .ForEach(Playlists.Add);
+            
+            var tracks = await _trackService.GetTracksAsync();
+            tracks.Select(track => new TrackViewModel(this, track))
                 .ToList()
                 .ForEach(Tracks.Add);
         }

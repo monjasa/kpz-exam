@@ -8,29 +8,26 @@ namespace WebApplication.Services
 {
     public class TrackService : ITrackService
     {
-        private readonly ITrackRepository _trackRepository;
-        private readonly IPlaylistRepository _playlistRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public TrackService(ITrackRepository trackRepository, IUnitOfWork unitOfWork)
+        public TrackService(IUnitOfWork unitOfWork)
         {
-            _trackRepository = trackRepository;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Track> GetTrackByIdAsync(int id)
         {
-            return await _trackRepository.FindAsync(id);
+            return await _unitOfWork.TrackRepository.FindAsync(id);
         }
 
         public async Task<IEnumerable<Track>> GetAllTracksAsync()
         {
-            return await _trackRepository.ListAsync();
+            return await _unitOfWork.TrackRepository.ListAsync();
         }
 
         public async Task<Track> CreateTrackAsync(Track track)
         {
-            var trackEntry = await _trackRepository.SaveAsync(track);
+            var trackEntry = await _unitOfWork.TrackRepository.SaveAsync(track);
             await _unitOfWork.ApplyChangesAsync();
 
             return trackEntry.Entity;
@@ -38,14 +35,14 @@ namespace WebApplication.Services
 
         public async Task<Track> UpdateTrackAsync(Track trackToUpdate, Track track)
         {
-            var playlist = await _playlistRepository.FindAsync(track.PlaylistId);
+            var playlist = await _unitOfWork.PlaylistRepository.FindAsync(track.PlaylistId);
             
             trackToUpdate.Title = track.Title;
             trackToUpdate.FilePath = track.FilePath;
             trackToUpdate.Playlist = playlist;
             trackToUpdate.PlaylistId = track.PlaylistId;
 
-            var updatedTrack = _trackRepository.Update(trackToUpdate);
+            var updatedTrack = _unitOfWork.TrackRepository.Update(trackToUpdate);
             await _unitOfWork.ApplyChangesAsync();
 
             return updatedTrack.Entity;
@@ -53,7 +50,7 @@ namespace WebApplication.Services
 
         public async Task<Track> DeleteTrackAsync(Track track)
         {
-            var trackEntry = _trackRepository.Remove(track);
+            var trackEntry = _unitOfWork.TrackRepository.Remove(track);
             await _unitOfWork.ApplyChangesAsync();
 
             return trackEntry.Entity;

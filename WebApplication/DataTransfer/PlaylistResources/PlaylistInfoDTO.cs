@@ -1,4 +1,4 @@
-﻿namespace WebApplication.DataTransfer
+﻿namespace WebApplication.DataTransfer.PlaylistResources
 {
     public class PlaylistInfoDTO
     {

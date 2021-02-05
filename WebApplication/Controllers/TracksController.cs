@@ -5,7 +5,7 @@ using ApplicationModel.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication.DataTransfer;
+using WebApplication.DataTransfer.TrackResources;
 using WebApplication.Services;
 
 namespace WebApplication.Controllers
@@ -60,7 +60,7 @@ namespace WebApplication.Controllers
                 await _trackService.UpdateTrackAsync(trackToUpdate, track);
                 return NoContent();
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
@@ -75,7 +75,7 @@ namespace WebApplication.Controllers
                 var createdTrack = await _trackService.CreateTrackAsync(_mapper.Map<TrackInfoDTO, Track>(trackInfo));
                 return CreatedAtAction(nameof(GetTrack), new { id = createdTrack.Id }, _mapper.Map<Track, TrackDTO>(createdTrack));
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
@@ -96,7 +96,7 @@ namespace WebApplication.Controllers
                 await _trackService.DeleteTrackAsync(track);
                 return NoContent();
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }

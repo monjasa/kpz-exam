@@ -1,13 +1,17 @@
-﻿using ApplicationModel.Models;
+﻿using System.Linq;
+using ApplicationModel.Models;
 
 namespace WpfApplication.ViewModels
 {
     public class TrackViewModel : ViewModelBase
     {
+        private readonly MainViewModel _mainViewModel;
+        
         private readonly Track _track;
 
-        public TrackViewModel(Track track)
+        public TrackViewModel(MainViewModel mainViewModel, Track track)
         {
+            _mainViewModel = mainViewModel;
             _track = track;
         }
         
@@ -38,6 +42,16 @@ namespace WpfApplication.ViewModels
             {
                 _track.FilePath = value;
                 OnPropertyChanged(nameof(_track.FilePath));
+            }
+        }
+
+        public PlaylistViewModel Playlist
+        {
+            get => _mainViewModel.Playlists.Single(playlist => playlist.Id == _track.Playlist.Id);
+            set
+            {
+                _track.PlaylistId = value.Id;
+                OnPropertyChanged(nameof(_track.Playlist));
             }
         }
     }

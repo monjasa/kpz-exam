@@ -2,41 +2,27 @@
 using System.Threading.Tasks;
 using ApplicationModel.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace WebApplication.DataAccess.Repositories
 {
-    public class TrackRepository : RepositoryBase, ITrackRepository
+    public class TrackRepository : RepositoryBase<Track>
     {
-        public TrackRepository(MusicContext context) : base(context)
+        public TrackRepository(DbContext context) : base(context)
         {
         }
 
-        public async Task<Track> FindAsync(int id)
+        public override async Task<Track> FindAsync(int id)
         {
-            return await _context.Tracks.FindAsync(id);
+            return await Context.Set<Track>()
+                .Include(track => track.Playlist)
+                .SingleAsync(track => track.Id == id);
         }
 
-        public async Task<IEnumerable<Track>> ListAsync()
+        public override async Task<IEnumerable<Track>> ListAsync()
         {
-            return await _context.Tracks
+            return await Context.Set<Track>()
                 .Include(track => track.Playlist)
                 .ToListAsync();
-        }
-
-        public async Task<EntityEntry<Track>> SaveAsync(Track track)
-        {
-            return await _context.Tracks.AddAsync(track);
-        }
-
-        public EntityEntry<Track> Update(Track track)
-        {
-            return _context.Tracks.Update(track);
-        }
-
-        public EntityEntry<Track> Remove(Track track)
-        {
-            return _context.Tracks.Remove(track);
         }
     }
 }

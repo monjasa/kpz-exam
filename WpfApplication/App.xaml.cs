@@ -39,6 +39,7 @@ namespace WpfApplication
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<MainWindow>();
             
+            services.AddScoped<IPlaylistService, HttpPlaylistService>();
             services.AddScoped<ITrackService, HttpTrackService>();
         }
         

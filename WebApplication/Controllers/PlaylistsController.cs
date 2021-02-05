@@ -5,7 +5,7 @@ using ApplicationModel.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication.DataTransfer;
+using WebApplication.DataTransfer.PlaylistResources;
 using WebApplication.Services;
 
 namespace WebApplication.Controllers
@@ -25,9 +25,10 @@ namespace WebApplication.Controllers
 
         // GET: api/Playlists
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Playlist>>> GetPlaylists()
+        public async Task<IEnumerable<PlaylistDTO>> GetPlaylists()
         {
-            throw new NotImplementedException();
+            var playlists = await _playlistService.GetAllPlaylistsAsync();
+            return _mapper.Map<IEnumerable<Playlist>, IEnumerable<PlaylistDTO>>(playlists);
         }
 
         // GET: api/Playlists/5
@@ -43,13 +44,6 @@ namespace WebApplication.Controllers
             return _mapper.Map<Playlist, PlaylistDTO>(playlist);
         }
 
-        // PUT: api/Playlists/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlaylist(int id, Playlist playlist)
-        {
-            throw new NotImplementedException();
-        }
-
         // POST: api/Playlists
         [HttpPost]
         public async Task<ActionResult<Playlist>> PostPlaylist([FromBody] PlaylistInfoDTO playlistInfo)
@@ -62,17 +56,10 @@ namespace WebApplication.Controllers
                 return CreatedAtAction(nameof(GetPlaylist), new { id = playlist.Id },
                     _mapper.Map<Playlist, PlaylistDTO>(playlist));
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        // DELETE: api/Playlists/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Playlist>> DeletePlaylist(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

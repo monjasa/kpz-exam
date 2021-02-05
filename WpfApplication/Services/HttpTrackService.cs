@@ -13,7 +13,19 @@ namespace WpfApplication.Services
         {
             _httpClient = httpClient;
         }
+
+        public async Task<Track> GetTrackByIdAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"api/Tracks/{id}");
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException();
+            }
         
+            return await response.Content.ReadAsAsync<Track>();
+        }
+
         public async Task<IEnumerable<Track>> GetTracksAsync()
         {
             var response = await _httpClient.GetAsync("api/Tracks");

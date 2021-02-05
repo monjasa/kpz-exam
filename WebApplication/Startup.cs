@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using ApplicationModel.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,11 +30,10 @@ namespace WebApplication
         {
             services.AddDbContext<MusicContext>(builder => 
                 builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<DbContext, MusicContext>();
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<ITrackRepository, TrackRepository>();
-            services.AddScoped<IPlaylistRepository, PlaylistRepository>();
-            
+
             services.AddScoped<ITrackService, TrackService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
             
